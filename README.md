@@ -2,4 +2,5 @@
 This is totally the ONLY WORKING background-multitasking friendly python code. Leave it on background and do whatever you want.
 Will Jump Every 14 Minutes.
 
-# pip install pygetwindow pydirectinput
+REQUIREMENTS:
+# pip install pygetwindow pydirectinput pyautogui
