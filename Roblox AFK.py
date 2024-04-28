@@ -7,7 +7,21 @@ import ctypes
 # Function to get the currently active window
 def get_active_window():
     GetForegroundWindow = ctypes.windll.user32.GetForegroundWindow
-    return gw.getWindowsWithHandle(GetForegroundWindow())[0]
+    GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
+    GetWindowText = ctypes.windll.user32.GetWindowTextW
+
+    hwnd = GetForegroundWindow()  # Get the handle of the currently active window
+    length = GetWindowTextLength(hwnd)  # Get the length of the window's title
+    buff = ctypes.create_unicode_buffer(length + 1)  # Create a buffer to store the title
+
+    GetWindowText(hwnd, buff, length + 1)  # Get the window's title
+
+    # Use the title to get the window object
+    windows = gw.getWindowsWithTitle(buff.value)
+    if windows:
+        return windows[0]
+    else:
+        return None
 
 # Press space once at the start
 try:
@@ -40,4 +54,5 @@ while True:
     pyautogui.moveTo(original_position)
 
     # Switch back to the previously active window
-    current_window.activate()
+    if current_window is not None:
+        current_window.activate()
