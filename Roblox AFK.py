@@ -3,6 +3,7 @@ import pydirectinput
 import pyautogui
 import time
 import ctypes
+from pygetwindow import PyGetWindowException
 
 # Function to get the currently active window
 def get_active_window():
@@ -36,7 +37,20 @@ while True:
     try:
         roblox = gw.getWindowsWithTitle('Roblox')[0]  # Get the Roblox window
         current_window = get_active_window()  # Save the currently active window
-        roblox.activate()  # Bring the Roblox window to the front
+
+        # Try to activate the window, retrying up to 3 times if it fails
+        for _ in range(3):
+            try:
+                time.sleep(0.1)  # Wait a bit before trying to activate the window
+                if roblox.isMinimized:  # If the window is minimized
+                    roblox.restore()  # Restore the window
+                roblox.activate()  # Bring the Roblox window to the front
+                break  # If the activation was successful, break out of the loop
+            except PyGetWindowException:
+                continue  # If the activation failed, try again
+        else:
+            print("Failed to activate Roblox window after 3 attempts")
+            continue
     except IndexError:
         print("Roblox window not found")
         continue
